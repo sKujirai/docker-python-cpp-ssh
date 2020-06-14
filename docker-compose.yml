@@ -1,0 +1,21 @@
+version: "2.3"
+services:
+  dl:
+    build: .
+    restart: always
+    container_name: ${CONTAINER_NAME}
+    hostname: ${CONTAINER_NAME}
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    ports:
+      - "${PORT_NOTEBOOK}:8080"
+      - "${PORT_SSH}:22"
+    volumes:
+      - ./work:/work
+    working_dir: /work
+    tty: true
+    command: >
+      bash -c '/etc/init.d/ssh restart &&
+      jupyter lab --no-browser --ip=0.0.0.0 --allow-root --NotebookApp.token="${NOTEBOOK_PASS}" --notebook-dir="/work"'
