@@ -4,6 +4,8 @@ FROM gcr.io/kaggle-gpu-images/python:v79
 ARG EIGEN_VERSION=3.3.7
 ARG BOOST_VERSION=boost-1.70.0
 ARG SPDLOG_VERSION=v1.3.1
+ARG XTL_VERSION=0.6.16
+ARG XTENSOR_VERSION=0.21.5
 ARG TMP_WORK_DIR="/tmp_work"
 
 RUN apt-get update \
@@ -46,6 +48,28 @@ RUN cd ${TMP_WORK_DIR} \
     && cd ${TMP_WORK_DIR} \
     && mv ${TMP_WORK_DIR}/spdlog /opt/ \
     && ln -s /opt/spdlog/include/spdlog/ /usr/local/include/spdlog
+
+# xtl
+RUN cd ${TMP_WORK_DIR} \
+    && git clone https://github.com/xtensor-stack/xtl.git \
+    && cd ${TMP_WORK_DIR}/xtl \
+    && git checkout ${XTL_VERSION} \
+    && mkdir ${TMP_WORK_DIR}/xtl/build \
+    && cd ${TMP_WORK_DIR}/xtl/build \
+    && cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. \
+    && make install \
+    && cd ${TMP_WORK_DIR}
+
+# xtensor
+RUN cd ${TMP_WORK_DIR} \
+    && git clone https://github.com/xtensor-stack/xtensor.git \
+    && cd ${TMP_WORK_DIR}/xtensor \
+    && git checkout ${XTENSOR_VERSION} \
+    && mkdir ${TMP_WORK_DIR}/xtensor/build \
+    && cd ${TMP_WORK_DIR}/xtensor/build \
+    && cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. \
+    && make install \
+    && cd ${TMP_WORK_DIR}
 
 # Remove tmp dir
 RUN rm -rf ${TMP_WORK_DIR}

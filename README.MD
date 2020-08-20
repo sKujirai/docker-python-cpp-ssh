@@ -17,6 +17,7 @@ docker-compose up --build
     - [Eigen](http://eigen.tuxfamily.org/)
     - [Boost](https://www.boost.org/)
     - [spdlog](https://github.com/gabime/spdlog)
+    - [xtensor](https://github.com/xtensor-stack/xtensor)
 
 ## Options
 - `PORT_SSH`: SSH port
