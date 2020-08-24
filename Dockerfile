@@ -6,6 +6,7 @@ ARG BOOST_VERSION=boost-1.70.0
 ARG SPDLOG_VERSION=v1.3.1
 ARG XTL_VERSION=0.6.16
 ARG XTENSOR_VERSION=0.21.5
+ARG XBLAS_VERSION=0.17.2
 ARG TMP_WORK_DIR="/tmp_work"
 
 RUN apt-get update \
@@ -16,7 +17,7 @@ RUN apt-get update \
 RUN mv /bin/sh /bin/sh_tmp && ln -s /bin/bash /bin/sh
 
 # C++
-RUN apt-get install -y --fix-broken --fix-missing sudo git build-essential cmake valgrind gdb emacs vim wget ftp ncftp doxygen graphviz software-properties-common
+RUN apt-get install -y --fix-broken --fix-missing sudo git build-essential cmake valgrind gdb emacs vim wget ftp ncftp doxygen graphviz software-properties-common libopenblas-dev liblapack-dev
 
 # Make temp dir
 RUN mkdir ${TMP_WORK_DIR}
@@ -67,6 +68,17 @@ RUN cd ${TMP_WORK_DIR} \
     && git checkout ${XTENSOR_VERSION} \
     && mkdir ${TMP_WORK_DIR}/xtensor/build \
     && cd ${TMP_WORK_DIR}/xtensor/build \
+    && cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. \
+    && make install \
+    && cd ${TMP_WORK_DIR}
+
+# xtensor-blas
+RUN cd ${TMP_WORK_DIR} \
+    && git clone https://github.com/xtensor-stack/xtensor-blas.git \
+    && cd ${TMP_WORK_DIR}/xtensor-blas \
+    && git checkout ${XBLAS_VERSION} \
+    && mkdir ${TMP_WORK_DIR}/xtensor-blas/build \
+    && cd ${TMP_WORK_DIR}/xtensor-blas/build \
     && cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. \
     && make install \
     && cd ${TMP_WORK_DIR}
